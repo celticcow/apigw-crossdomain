@@ -59,10 +59,48 @@ def get_domains():
     return(domain_list)
 #end_of_get_domains
 
+### search domain
+def search_domain_4_ip(mds_ip, cma, ip_2_find):
+    debug = 1
+
+    try:
+        cma_sid = apifunctions.login("roapi", "1qazxsw2", mds_ip, cma)
+
+        if(debug == 1):
+            print("session id : " + cma_sid)
+        
+        check_host_obj = {"type" : "host", "filter" : ip_2_find, "ip-only" : "true"}
+        check_host = apifunctions.api_call(mds_ip, "show-objects", check_host_obj, cma_sid)
+
+        print("here")
+        print(check_host)
+
+        check_host_len = len(check_host['objects'])
+        if(check_host['total'] == 0):
+            print("no host exist")
+        else:
+            for x in range(check_host['total']):
+                print(check_host['objects'][x]['name'])
+                print(check_host['objects'][x]['ipv4-address'])
+                ##where_used goes here
+        
+        time.sleep(3)
+        logout_result = apifunctions.api_call(mds_ip, "logout", {}, cma_sid)
+        if(debug == 1):
+            print(logout_result)
+        
+    except:
+        if(cma_sid != ""):
+            emergency_logout = apifunctions.api_call(mds_ip, "logout", {}, cma_sid)
+        print("no login to cma")
+#end_of_search_domain_4_ip
 
 @app.route('/crossdomain') #, methods=['POST'])
 def crossdomain():
     domain_list = get_domains()
+
+    for i in domain_list:
+        search_domain_4_ip("146.18.96.16", i, "146.18.2.137")
 
     #dummy return var
     return({"t1" : 0})
