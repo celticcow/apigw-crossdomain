@@ -1,0 +1,6 @@
+build out an api gw to do crossdomain search based on
+
+{ "ipaddr" : "aaa.bbb.ccc.ddd" }
+
+phase 1:
+get list of cma's
