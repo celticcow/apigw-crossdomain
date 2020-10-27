@@ -82,7 +82,7 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
             for x in range(check_host['total']):
                 print(check_host['objects'][x]['name'])
                 print(check_host['objects'][x]['ipv4-address'])
-                whereused_by_name(mds_ip, check_host['objects'][x]['name'], cma_sid)
+                where_used_json = whereused_by_name(mds_ip, check_host['objects'][x]['name'], cma_sid)
         
         time.sleep(3)
         logout_result = apifunctions.api_call(mds_ip, "logout", {}, cma_sid)
@@ -112,17 +112,24 @@ def whereused_by_name(mds_ip, name, sid):
         print("^^^^^^^^^^^^^^^^^^^^")
         print(json.dumps(where_used_result))
         print("!!!!!!!!!!!!!!!!!!!!")
+    
+    return(where_used_result)
+#end of where_used
 
 
 @app.route('/crossdomain') #, methods=['POST'])
 def crossdomain():
     domain_list = get_domains()
 
+    crossdomain_json = {}
+
     for i in domain_list:
         search_domain_4_ip("146.18.96.16", i, "146.18.2.137")
+        crossdomain_json[i] = "info" + str(i)
 
     #dummy return var
-    return({"t1" : 0})
+    #return({"t1" : 0})
+    return(crossdomain_json)
 
 if __name__ == '__main__':
     app.run()
