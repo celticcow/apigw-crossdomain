@@ -82,7 +82,7 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
             for x in range(check_host['total']):
                 print(check_host['objects'][x]['name'])
                 print(check_host['objects'][x]['ipv4-address'])
-                ##where_used goes here
+                whereused_by_name(mds_ip, check_host['objects'][x]['name'], cma_sid)
         
         time.sleep(3)
         logout_result = apifunctions.api_call(mds_ip, "logout", {}, cma_sid)
@@ -94,6 +94,25 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
             emergency_logout = apifunctions.api_call(mds_ip, "logout", {}, cma_sid)
         print("no login to cma")
 #end_of_search_domain_4_ip
+
+##where used by name
+def whereused_by_name(mds_ip, name, sid):
+    debug = 1
+
+    if(debug == 1):
+        print("in whereused function")
+
+    search_where_json = {
+        "name" : name
+    }
+
+    where_used_result = apifunctions.api_call(mds_ip, "where-used", search_where_json, sid)
+
+    if(debug == 1):
+        print("^^^^^^^^^^^^^^^^^^^^")
+        print(json.dumps(where_used_result))
+        print("!!!!!!!!!!!!!!!!!!!!")
+
 
 @app.route('/crossdomain') #, methods=['POST'])
 def crossdomain():
