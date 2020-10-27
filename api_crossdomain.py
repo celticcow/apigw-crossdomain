@@ -75,6 +75,8 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
         print("here")
         print(check_host)
 
+        where_used_json = {}
+
         check_host_len = len(check_host['objects'])
         if(check_host['total'] == 0):
             print("no host exist")
@@ -93,6 +95,8 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
         if(cma_sid != ""):
             emergency_logout = apifunctions.api_call(mds_ip, "logout", {}, cma_sid)
         print("no login to cma")
+    
+    return(where_used_json)
 #end_of_search_domain_4_ip
 
 ##where used by name
@@ -117,16 +121,30 @@ def whereused_by_name(mds_ip, name, sid):
 #end of where_used
 
 
-@app.route('/crossdomain') #, methods=['POST'])
+@app.route('/crossdomain', methods=['POST'])
 def crossdomain():
     domain_list = get_domains()
 
     crossdomain_json = {}
 
-    for i in domain_list:
-        search_domain_4_ip("146.18.96.16", i, "146.18.2.137")
-        crossdomain_json[i] = "info" + str(i)
+    ip_2_find_json = request.get_json(force=True)  #"146.18.2.137"
 
+    ip_2_find = ip_2_find_json['ipaddr']
+
+    crossdomain_json['ip-address'] = ip_2_find
+    crossdomain_json['lookup'] = "where-used"
+    crossdomain_json['cmas'] = []
+
+    for i in domain_list:
+        where_result_json = search_domain_4_ip("146.18.96.16", i, ip_2_find)
+
+        tmp = {}
+        tmp['cma'] = i
+        tmp['whereused'] = where_result_json
+        crossdomain_json['cmas'].append(tmp)
+        ##crossdomain_json[i] = "info" + str(i)
+
+    crossdomain_json['total'] = len(crossdomain_json['cmas'])
     #dummy return var
     #return({"t1" : 0})
     return(crossdomain_json)

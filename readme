@@ -4,3 +4,9 @@ build out an api gw to do crossdomain search based on
 
 phase 1:
 get list of cma's
+
+phase 2: 
+search domains and append where used to results.
+
+curl http://localhost:5000/crossdomain -X POST --data '{"ipaddr" : "146.18.2.137"}'
+
