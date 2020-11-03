@@ -10,3 +10,8 @@ search domains and append where used to results.
 
 curl http://localhost:5000/crossdomain -X POST --data '{"ipaddr" : "146.18.2.137"}'
 
+issue log:
+* phase 2 is good, but when we have rules returned via where-used we have uid only
+   crossdomain search prev used a def rule_output(access_rule_result): to extract the rule in human format
+   will need to do something similar and construct json out for this and append
+

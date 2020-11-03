@@ -116,9 +116,105 @@ def whereused_by_name(mds_ip, name, sid):
         print("^^^^^^^^^^^^^^^^^^^^")
         print(json.dumps(where_used_result))
         print("!!!!!!!!!!!!!!!!!!!!")
-    
+
+    try:
+        dtotal = where_used_result['used-directly']['total']
+        print("Total Where Used Directly : ")
+        print(dtotal)
+
+        len_obj          = len(where_used_result['used-directly']['objects'])
+        len_access_rule  = len(where_used_result['used-directly']['access-control-rules'])
+        len_threat_prev  = len(where_used_result['used-directly']['threat-prevention-rules'])
+        len_nat_rules    = len(where_used_result['used-directly']['nat-rules'])
+
+        if(debug == 1):
+            print(len_obj)
+            print(len_access_rule)
+            print(len_threat_prev)
+            print(len_nat_rules)
+
+        print("Use in Object :")
+        for x in range(len_obj):
+            print("Use in " + where_used_result['used-directly']['objects'][x]['name'] + " which is a " + where_used_result['used-directly']['objects'][x]['type'])
+            #sub_search = where_used_result['used-directly']['objects'][x]['name']
+        
+        print("Use in Access Rule :")
+        for x in range(len_access_rule):
+            print("use in policy : " + where_used_result['used-directly']['access-control-rules'][x]['layer']['name'] + " rule-number " + where_used_result['used-directly']['access-control-rules'][x]['position'])
+
+            tmp_uid = where_used_result['used-directly']['access-control-rules'][x]['rule']['uid']
+            tmp_layer = where_used_result['used-directly']['access-control-rules'][x]['layer']['name']
+
+            get_access_rule = {
+                'uid' : tmp_uid,
+                'layer' : tmp_layer
+            }
+            ###note.
+            access_rule_result = apifunctions.api_call(mds_ip, 'show-access-rule', get_access_rule, sid)
+            print("------------------------------------------------------------------")
+            print(json.dumps(access_rule_result))
+            print("------------------------------------------------------------------")
+            #rule_output(access_rule_result)
+            get_rule(access_rule_result)
+
+        print("Use in Threat Prevention Rules :")
+        for x in range(len_threat_prev):
+            print("feature not avaliable.  send greg what you searched for")
+        
+        print("Use in Nat Rules :")
+        for x in range(len_nat_rules):
+            print("use in nat rules | policy " + where_used_result['used-directly']['nat-rules'][x]['package']['name'] + " nat-rule number " + where_used_result['used-directly']['nat-rules'][x]['position'])
+
+    except:
+        pass
+
     return(where_used_result)
 #end of where_used
+
+def get_rule(access_rule_result):
+    print("in get_rule")
+    debug = 1
+    out = "\n"
+
+    print("#####################", end=out)
+    if(debug == 1):
+        print(json.dumps(access_rule_result), end=out)
+    
+    s_len = len(access_rule_result['source'])
+    d_len = len(access_rule_result['destination'])
+    p_len = len(access_rule_result['service'])
+
+    if(debug == 1):
+        print(access_rule_result['source'], end=out)
+        print("++", end=out)
+        print(access_rule_result['destination'], end=out)
+        print("++", end=out)
+        print(access_rule_result['service'], end=out)
+        print("++", end=out)
+        print("#####################", end=out)
+        #print(s_len) #+ "  " + d_len + "  " + p_len, end=out)
+
+    print("SOURCE:", end=out)
+    for x in range(s_len):
+        #print(out)
+        print(access_rule_result['source'][x]['name'], end=" : ")
+        print(access_rule_result['source'][x]['type'], end=out)
+        #print("______________________", end=out)
+    
+    print("DESTINATION:", end=out)
+    for x in range(d_len):
+        #print(out)
+        print(access_rule_result['destination'][x]['name'], end=" : ")
+        print(access_rule_result['destination'][x]['type'], end=out)
+    
+    print("PORTS:", end=out)
+    for x in range(p_len):
+        #print(out)
+        print(access_rule_result['service'][x]['name'], end=out)
+        #print(access_rule_result['service'][x]['type'], end=out)
+
+    print("++++++++++++++++++++++", end=out)
+#end of rule_output
 
 
 @app.route('/crossdomain', methods=['POST'])
