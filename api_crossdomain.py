@@ -84,6 +84,7 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
             for x in range(check_host['total']):
                 print(check_host['objects'][x]['name'])
                 print(check_host['objects'][x]['ipv4-address'])
+                #this could be a problem if more than 1
                 where_used_json = whereused_by_name(mds_ip, check_host['objects'][x]['name'], cma_sid)
         
         time.sleep(3)
@@ -117,6 +118,10 @@ def whereused_by_name(mds_ip, name, sid):
         print(json.dumps(where_used_result))
         print("!!!!!!!!!!!!!!!!!!!!")
 
+    my_where_used = {}
+    my_where_used['access-control-rules'] = []
+    my_where_used['objects'] = []
+
     try:
         dtotal = where_used_result['used-directly']['total']
         print("Total Where Used Directly : ")
@@ -138,6 +143,9 @@ def whereused_by_name(mds_ip, name, sid):
             print("Use in " + where_used_result['used-directly']['objects'][x]['name'] + " which is a " + where_used_result['used-directly']['objects'][x]['type'])
             #sub_search = where_used_result['used-directly']['objects'][x]['name']
         
+        my_where_used['objects'] = where_used_result['used-directly']['objects']
+
+        rule_count = 0
         print("Use in Access Rule :")
         for x in range(len_access_rule):
             print("use in policy : " + where_used_result['used-directly']['access-control-rules'][x]['layer']['name'] + " rule-number " + where_used_result['used-directly']['access-control-rules'][x]['position'])
@@ -155,7 +163,14 @@ def whereused_by_name(mds_ip, name, sid):
             print(json.dumps(access_rule_result))
             print("------------------------------------------------------------------")
             #rule_output(access_rule_result)
+            """
+            need to sub out len_access_rule with access_rule_result
+            """
             get_rule(access_rule_result)
+            rule_count += 1
+            my_where_used['access-control-rules'].append(access_rule_result)
+        
+        print("Rule Total : " + str(rule_count))
 
         print("Use in Threat Prevention Rules :")
         for x in range(len_threat_prev):
@@ -167,6 +182,12 @@ def whereused_by_name(mds_ip, name, sid):
 
     except:
         pass
+
+    print("__________________________________________")
+    print(json.dumps(my_where_used))
+    print(len(my_where_used['objects']))
+    print(len(my_where_used['access-control-rules']))
+    print("__________________________________________")
 
     return(where_used_result)
 #end of where_used
