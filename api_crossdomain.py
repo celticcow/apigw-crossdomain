@@ -9,7 +9,6 @@ import apifunctions
 from flask import Flask, request
 from flask_json import FlaskJSON, JsonError, json_response, as_json
 
-
 #remove the InsecureRequestWarning messages
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -78,6 +77,10 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
         where_used_json = {}
 
         check_host_len = len(check_host['objects'])
+
+        if(cma == 'TestCMA'):
+            print("look here break")
+
         if(check_host['total'] == 0):
             print("no host exist")
         else:
@@ -121,6 +124,7 @@ def whereused_by_name(mds_ip, name, sid):
     my_where_used = {}
     my_where_used['access-control-rules'] = []
     my_where_used['objects'] = []
+    my_where_used['nat-rules'] = []
 
     try:
         dtotal = where_used_result['used-directly']['total']
@@ -166,7 +170,13 @@ def whereused_by_name(mds_ip, name, sid):
             """
             need to sub out len_access_rule with access_rule_result
             """
-            get_rule(access_rule_result)
+            """
+            try:
+                get_rule(access_rule_result)
+            except:
+                print("error getting rule ... what happened BREAK_2")
+                pass
+            """
             rule_count += 1
             my_where_used['access-control-rules'].append(access_rule_result)
         
@@ -179,7 +189,28 @@ def whereused_by_name(mds_ip, name, sid):
         print("Use in Nat Rules :")
         for x in range(len_nat_rules):
             print("use in nat rules | policy " + where_used_result['used-directly']['nat-rules'][x]['package']['name'] + " nat-rule number " + where_used_result['used-directly']['nat-rules'][x]['position'])
+            print("HERE LOOK HERE\n\n\n")
 
+            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+            print(where_used_result['used-directly']['nat-rules'][x])
+            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+            
+            ### need to work on this
+            tmp_uid = where_used_result['used-directly']['nat-rules'][x]['rule']['uid']
+            ## note2
+            tmp_package = where_used_result['used-directly']['nat-rules'][x]['package']['name']
+
+            get_nat_rule = {
+                'uid' : tmp_uid,
+                'package' : tmp_package
+            }
+            nat_rule_result = apifunctions.api_call(mds_ip, 'show-nat-rule', get_nat_rule, sid)
+            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+            print(json.dumps(nat_rule_result))
+            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+
+            my_where_used['nat-rules'].append(nat_rule_result)
+            
     except:
         pass
 
@@ -187,11 +218,16 @@ def whereused_by_name(mds_ip, name, sid):
     print(json.dumps(my_where_used))
     print(len(my_where_used['objects']))
     print(len(my_where_used['access-control-rules']))
+    print(len(my_where_used['nat-rules']))
     print("__________________________________________")
 
-    return(where_used_result)
+    ##return(where_used_result)
+    return(my_where_used)
 #end of where_used
 
+###
+# don't need ??
+###
 def get_rule(access_rule_result):
     print("in get_rule")
     debug = 1
@@ -268,3 +304,4 @@ def crossdomain():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
+#end of program
