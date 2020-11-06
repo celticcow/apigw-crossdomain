@@ -75,6 +75,7 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
         print(check_host)
 
         where_used_json = {}
+        where_used_json['cpobj'] = []
 
         check_host_len = len(check_host['objects'])
 
@@ -88,7 +89,9 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
                 print(check_host['objects'][x]['name'])
                 print(check_host['objects'][x]['ipv4-address'])
                 #this could be a problem if more than 1
-                where_used_json = whereused_by_name(mds_ip, check_host['objects'][x]['name'], cma_sid)
+                local_where_used_json = whereused_by_name(mds_ip, check_host['objects'][x]['name'], cma_sid)
+                where_used_json['cpobj'].append(local_where_used_json)
+
         
         time.sleep(3)
         logout_result = apifunctions.api_call(mds_ip, "logout", {}, cma_sid)
