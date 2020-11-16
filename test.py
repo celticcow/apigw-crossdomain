@@ -14,6 +14,7 @@ def main():
 
     test_json['ip-address'] = "146.18.2.137"
     test_json['lookup'] = "where-used"
+    test_json['total'] = 3
     test_json['cmas'] = []
 
     i = 0
@@ -26,6 +27,8 @@ def main():
     print(test_json)
 
     print(test_json['cmas'][1]['cma'])
+
+    print(type(test_json['total']))
 
 
 if __name__ == "__main__":

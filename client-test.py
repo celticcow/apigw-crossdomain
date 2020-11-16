@@ -20,7 +20,7 @@ def main():
     print("in main")
 
     ip_json = {
-        "ipaddr" : "146.18.2.13"
+        "ipaddr" : "146.18.2.137"
     }
 
     url = "http://localhost:5000/crossdomain"
@@ -32,8 +32,11 @@ def main():
     print("-------------------------------------------------")
     print(data)
 
-    #for x in range(data['total']):
-        #print(data[cmas][x])
+    print(data['total'])
+
+    for x in range(data['total']):
+        print(data['cmas'][x]['cma'])
+        print(data['cmas'][x]['whereused'])
     
 
 if __name__ == "__main__":
