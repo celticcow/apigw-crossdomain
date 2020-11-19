@@ -20,7 +20,7 @@ def main():
     print("in main")
 
     ip_json = {
-        "ipaddr" : "146.18.4.144"
+        "ipaddr" : "146.18.2.137"
     }
 
     url = "http://localhost:5000/crossdomain"
@@ -39,12 +39,16 @@ def main():
 
         print("CMA ", end="\t")
         print(data['cmas'][x]['cma'])
+
+        if(data['cmas'][x]['cma'] == "TestCMA"):
+            print("break point")
         
         print("Where-Used ", end="")
 
         if(len(data['cmas'][x]['whereused']['cpobj']) == 0):
             print("not used\n")
         else:
+            ### need loop var here
             #print(data['cmas'][x]['whereused']) 
             tmp1 = data['cmas'][x]['whereused']['cpobj'][0]['access-control-rules']
             for i in range(len(tmp1)):
@@ -57,6 +61,11 @@ def main():
                 print("object")
                 print(data['cmas'][x]['whereused']['cpobj'][0]['objects'][j])
                 print("\n^^\n")
+            
+            tmp3 = data['cmas'][x]['whereused']['cpobj'][0]['nat-rules']
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print(tmp3)
+            print("############################")
             #print(data['cmas'][x]['whereused']['cpobj'])
             #print("\n________________\n")
             #print(tmp1)
