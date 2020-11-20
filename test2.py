@@ -17,7 +17,10 @@ def main():
     print(len(tmp1))
     print(tmp1['total'])
 
+    for x in range(0):
+        print(x)
 
+    """
     for i in range(tmp1['total']):
         print(tmp1['cmas'][i]['cma'])
         print(tmp1['cmas'][i]['whereused'])
@@ -32,7 +35,7 @@ def main():
         print(json.dumps(data))
     
     #print(D)
-
+    """
     """
     with open('large.json') as f:
         d = json.load(f)

@@ -45,27 +45,42 @@ def main():
         
         print("Where-Used ", end="")
 
-        if(len(data['cmas'][x]['whereused']['cpobj']) == 0):
-            print("not used\n")
-        else:
+        """
+        for loop going through range of cpobj. 
+        if this len == 0 then there is nothing used so the loop will exist immediatly
+        if not then we need to loop through each of the parts
+        access-control-rules / objects / nat-rules
+        """
+        #if(len(data['cmas'][x]['whereused']['cpobj']) == 0):
+        #    print("not used\n")
+        #else:
+        for j in range(len(data['cmas'][x]['whereused']['cpobj'])):
             ### need loop var here
+            ## what is len of cpobj ???   maybe not hard set to [0] but to var ... need a k len
             #print(data['cmas'][x]['whereused']) 
-            tmp1 = data['cmas'][x]['whereused']['cpobj'][0]['access-control-rules']
+            ##print("loop len here")
+            ##print(len(data['cmas'][x]['whereused']['cpobj']))
+
+            tmp1 = data['cmas'][x]['whereused']['cpobj'][j]['access-control-rules']
             for i in range(len(tmp1)):
                 print("rule")
-                print(data['cmas'][x]['whereused']['cpobj'][0]['access-control-rules'][i])
+                print(data['cmas'][x]['whereused']['cpobj'][j]['access-control-rules'][i])
                 print("\n--\n")
 
-            tmp2 = data['cmas'][x]['whereused']['cpobj'][0]['objects']
-            for j in range(len(tmp2)):
+            tmp2 = data['cmas'][x]['whereused']['cpobj'][j]['objects']
+            for k in range(len(tmp2)):
                 print("object")
-                print(data['cmas'][x]['whereused']['cpobj'][0]['objects'][j])
+                print(data['cmas'][x]['whereused']['cpobj'][j]['objects'][k])
                 print("\n^^\n")
             
-            tmp3 = data['cmas'][x]['whereused']['cpobj'][0]['nat-rules']
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            print(tmp3)
-            print("############################")
+            tmp3 = data['cmas'][x]['whereused']['cpobj'][j]['nat-rules']
+            for y in range(len(tmp3)):
+                print("nat")
+                print(data['cmas'][x]['whereused']['cpobj'][j]['nat-rules'][y])
+                print("\n!!\n")
+            #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            #print(tmp3)
+            #print("############################")
             #print(data['cmas'][x]['whereused']['cpobj'])
             #print("\n________________\n")
             #print(tmp1)
