@@ -12,7 +12,7 @@ Greg_Dunlap / CelticCow
 
 test script to do json query to api gw
 
-curl http://localhost:5000/crossdomain -X POST --data '{"ipaddr" : "146.18.2.137"}'
+curl http://host:5000/crossdomain -X POST --data '{"ipaddr" : "146.18.2.137"}'
 """
 
 
@@ -20,10 +20,10 @@ def main():
     print("in main")
 
     ip_json = {
-        "ipaddr" : "204.135.8.50"
+        "ipaddr" : "204.135.14.31"
     }
 
-    url = "http://firewall.infosec.fedex.com:5000/crossdomain"  #was localhost
+    url = "http://firewall.infosec.fedex.com:4000/crossdomain"  #was localhost
     
     r = requests.post(url, json.dumps(ip_json))
 
@@ -40,8 +40,8 @@ def main():
         print("CMA ", end="\t")
         print(data['cmas'][x]['cma'])
 
-        if(data['cmas'][x]['cma'] == "TestCMA"):
-            print("break point")
+        #if(data['cmas'][x]['cma'] == "TestCMA"):
+        #    print("break point")
         
         print("Where-Used ", end="")
 

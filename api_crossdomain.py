@@ -26,9 +26,9 @@ FlaskJSON(app)
 
 #worker functions
 
-def get_domains():
+def get_domains(mds_ip):
     #static for now
-    mds_ip = "146.18.96.16"
+    ##mds_ip = "146.18.96.16"
     debug = 1
 
     domain_list = []
@@ -279,7 +279,10 @@ def get_rule(access_rule_result):
 
 @app.route('/crossdomain', methods=['POST'])
 def crossdomain():
-    domain_list = get_domains()
+
+    mds_ip = "192.168.159.150"
+
+    domain_list = get_domains(mds_ip)
 
     crossdomain_json = {}
 
@@ -292,7 +295,7 @@ def crossdomain():
     crossdomain_json['cmas'] = []
 
     for i in domain_list:
-        where_result_json = search_domain_4_ip("146.18.96.16", i, ip_2_find)
+        where_result_json = search_domain_4_ip(mds_ip, i, ip_2_find)
 
         tmp = {}
         tmp['cma'] = i
@@ -306,5 +309,5 @@ def crossdomain():
     return(crossdomain_json)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=4000)
 #end of program
