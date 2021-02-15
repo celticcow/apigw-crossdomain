@@ -59,7 +59,7 @@ def get_domains(mds_ip):
 #end_of_get_domains
 
 ### search domain
-def search_domain_4_ip(mds_ip, cma, ip_2_find):
+def search_domain_4_ip(mds_ip, cma, item, ipsearch = 1):
     debug = 1
 
     try:
@@ -68,7 +68,18 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
         if(debug == 1):
             print("session id : " + cma_sid)
         
-        check_host_obj = {"type" : "host", "filter" : ip_2_find, "ip-only" : "true"}
+        if(ipsearch == 0):
+            #assume name search
+            check_host_obj = {
+                "type" : "object",
+                "order" : [ {
+                    "ASC" : "name"
+                }],
+                "in" : ["name" , item]
+            }
+        else:
+            check_host_obj = {"type" : "host", "filter" : item, "ip-only" : "true"}
+
         check_host = apifunctions.api_call(mds_ip, "show-objects", check_host_obj, cma_sid)
 
         print("here")
@@ -87,7 +98,8 @@ def search_domain_4_ip(mds_ip, cma, ip_2_find):
         else:
             for x in range(check_host['total']):
                 print(check_host['objects'][x]['name'])
-                print(check_host['objects'][x]['ipv4-address'])
+                ### if searching for a name this would error out.
+                #print(check_host['objects'][x]['ipv4-address'])
                 #this could be a problem if more than 1
                 local_where_used_json = whereused_by_name(mds_ip, check_host['objects'][x]['name'], cma_sid)
                 where_used_json['cpobj'].append(local_where_used_json)
@@ -276,6 +288,35 @@ def get_rule(access_rule_result):
     print("++++++++++++++++++++++", end=out)
 #end of rule_output
 
+@app.route('/crossdomain_name', methods=['POST'])
+def crossdomain_name():
+    mds_ip = "192.168.159.150"
+
+    domain_list = get_domains(mds_ip)
+
+    crossdomain_json = {}
+
+    name_2_find_json = request.get_json(force=True)
+
+    name_2_find = name_2_find_json['name']
+
+    crossdomain_json['ip-address'] = name_2_find
+    crossdomain_json['lookup'] = "where-used"
+    crossdomain_json['cmas'] = []
+
+    for i in domain_list:
+        where_result_json = search_domain_4_ip(mds_ip, i, name_2_find, 0)
+
+        tmp = {}
+        tmp['cma'] = i
+        tmp['whereused'] = where_result_json
+        crossdomain_json['cmas'].append(tmp)
+        ##crossdomain_json[i] = "info" + str(i)
+
+    crossdomain_json['total'] = len(crossdomain_json['cmas'])
+
+    return(crossdomain_json)
+#end of crossdomain_name
 
 @app.route('/crossdomain', methods=['POST'])
 def crossdomain():
@@ -307,6 +348,7 @@ def crossdomain():
     #dummy return var
     #return({"t1" : 0})
     return(crossdomain_json)
+#end of crossdomain
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4000)

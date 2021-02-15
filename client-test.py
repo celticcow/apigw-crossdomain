@@ -20,12 +20,19 @@ def main():
     print("in main")
 
     ip_json = {
-        "ipaddr" : "204.135.14.31"
+        "ipaddr" : "10.255.1.57"
     }
 
-    url = "http://firewall.infosec.fedex.com:4000/crossdomain"  #was localhost
+    name_json = {
+        "name" : "afw-161.135.84.6-26"
+    }
+
+    url  = "http://firewall.infosec.fedex.com:4000/crossdomain"  
+    url2 = "http://firewall.infosec.fedex.com:4000/crossdomain_name"
     
-    r = requests.post(url, json.dumps(ip_json))
+    ##r = requests.post(url, json.dumps(ip_json))
+
+    r = requests.post(url2,json.dumps(name_json))
 
     data = r.json()
 
