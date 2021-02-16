@@ -45,7 +45,9 @@ def get_domains(mds_ip):
 
 def search_cma(mds, cma, host_ip):
     debug = 0
-    print("searching cma")
+
+    if(debug == 1):
+        print("searching cma")
 
     check_host_ip_json = {"type" : "host", "filter" : host_ip, "ip-only" : "true"}
     check_range_ip_json = {"type" : "address-range", "filter" : host_ip, "ip-only" : "true"}
@@ -73,7 +75,7 @@ def search_cma(mds, cma, host_ip):
         for i in range(check_range['total']):
             if(debug == 1):
                 print(check_range['objects'][i]['name'])
-            if(check_range['objects'][i]['name'] == "All_Internet"):
+            if((check_range['objects'][i]['name'] == "All_Internet") or (check_range['objects'][i]['name'] == "IPv4-Address-Range")):
                 pass
             else:
                 name_list.append(check_range['objects'][i]['name'])
@@ -97,7 +99,7 @@ def main():
     print("begin")
     debug = 0
 
-    mds_ip = "146.18.96.16"
+    mds_ip = "192.168.159.150"
     domains = get_domains(mds_ip)
 
     if(debug == 1):
@@ -106,7 +108,7 @@ def main():
         print("----------------------")
 
     for domain in domains:
-        cma_names = search_cma(mds_ip, domain, "5.6.5.5")
+        cma_names = search_cma(mds_ip, domain, "10.236.249.143")
         print("*******************************")
         print(domain)
         print(cma_names)

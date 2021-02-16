@@ -20,7 +20,7 @@ def main():
     print("in main")
 
     ip_json = {
-        "ipaddr" : "10.255.1.57"
+        "ipaddr" : "204.135.8.50"
     }
 
     name_json = {
@@ -30,9 +30,9 @@ def main():
     url  = "http://firewall.infosec.fedex.com:4000/crossdomain"  
     url2 = "http://firewall.infosec.fedex.com:4000/crossdomain_name"
     
-    ##r = requests.post(url, json.dumps(ip_json))
+    r = requests.post(url, json.dumps(ip_json))
 
-    r = requests.post(url2,json.dumps(name_json))
+    ##r = requests.post(url2,json.dumps(name_json))
 
     data = r.json()
 
